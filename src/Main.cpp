@@ -15,7 +15,7 @@
 #include <time.h>
 using namespace std;
 
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 #define THRESHOLD 7
 vector<string> splitstr(const string& str, const string& delim);
 
@@ -90,18 +90,19 @@ int main(int argc, const char * argv[]) {
 	protein << myPDB.getNumberOfAminos() << "\n";
 	for (int i = 0; i < myPDB.getNumberOfAminos(); i++) {
 		string amino = myPDB.getAllAminos(i);
-		protein << i << " " << amino << " " << i << "\n";
+		protein << i << " " << amino << " " << myPDB.aminosNumber.at(i) << "\n";
 		mygraph.addNode(amino);
 	}
 	for (int i = 0; i < myPDB.getNumberOfAminos(); i++) {
 		myPDB.getXYZOfAmino(i, &x1, &y1, &z1);
 		vector<int> end;
+		vector<float> dists;
 		for (int j = 0; j < myPDB.getNumberOfAminos(); j++) {
 			if (i != j) {
 				myPDB.getXYZOfAmino(j, &x2, &y2, &z2);
 				d = dist(x1, y1, z1, x2, y2, z2);
 				if (d < THRESHOLD) {
-					if (myPDB.getAllAminos(i) > myPDB.getAllAminos(j)) {
+					//if (myPDB.getAllAminos(i) > myPDB.getAllAminos(j)) {
 						mygraph.addEdge(myPDB.getAllAminos(i),
 								myPDB.getAllAminos(j));
 						/*else {
@@ -111,17 +112,19 @@ int main(int argc, const char * argv[]) {
 						 myPDB.getAllAminos(i));
 						 }*/
 						end.push_back(j);
+						dists.push_back(d);
+						
 					}
 					if ( DEBUG_MODE == 1) {
 
 						//cout << i << "and" << j << "Distance: " << d << endl;
-					}
+					//}
 				}
 			}
 		}
 		protein << end.size() << "\n";
 		for (int j = 0; j < end.size(); j++) {
-			protein << i << " " << end.at(j) << "\n";
+			protein << i << " " << end.at(j) <<" " << dists.at(j) << "\n";
 		}
 
 	}
