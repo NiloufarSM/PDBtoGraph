@@ -34,7 +34,6 @@ PDB::PDB(Parser& myParser) {
 	for (int i = 0; i < myParser.models.at(0).numberOfChains; i++) {
 		for (int j = 0; j < myParser.models.at(0).chains.at(i).numberOfAminos;
 				j++) {
-
 			// checking whether that amino acid is validate or not. we didnt want
 			// to calculate coordinates for aminos which their residue number has not
 			// been mentioned in PDB file.
@@ -70,6 +69,7 @@ PDB::PDB(Parser& myParser) {
 				x =
 						myParser.models.at(0).chains.at(i).aminos.at(j).atoms.at(
 								1).X;
+
 				y =
 						myParser.models.at(0).chains.at(i).aminos.at(j).atoms.at(
 								1).Y;
@@ -84,15 +84,20 @@ PDB::PDB(Parser& myParser) {
 									0).residue << " or "
 							<< myParser.models.at(0).chains.at(i).aminos.at(j).atoms.at(
 									1).residue << endl;
+
 					cout << "--The amino resseq is: "
 							<< myParser.models.at(0).chains.at(i).aminos.at(j).atoms.at(
 									1).resSeq << endl;
-				}
-				aminosNumber.push_back(
-							myParser.models.at(0).chains.at(i).aminos.at(j).atoms.at(
-									1).resSeq);
-					//cin >> in;
 
+				}
+
+				aminosNumber.push_back(
+						myParser.models.at(0).chains.at(i).aminos.at(j).atoms.at(
+								1).resSeq);
+				aminosChain.push_back(
+						myParser.models.at(0).chains.at(i).aminos.at(j).atoms.at(
+								1).chainID);
+				//cin >> in;
 
 				if (myParser.models.at(0).chains.at(i).aminos.at(j).atoms.at(0).residue
 						== "ARG"
@@ -240,7 +245,9 @@ PDB::PDB(Parser& myParser) {
 				}
 
 			}
+
 		}
+
 	}
 
 }
@@ -315,9 +322,9 @@ void PDB::printResult() {
 	}
 
 }
-int PDB::getRealNumber(int aminoNumber) {
+int PDB::getRealNumber(int aminoNumber, char chain) {
 	for (int i = 0; i < aminosNumber.size(); i++)
-		if (aminoNumber == aminosNumber.at(i))
+		if (aminoNumber == aminosNumber.at(i) && chain == aminosChain.at(i))
 			return i;
 	return -1;
 }

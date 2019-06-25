@@ -16,7 +16,7 @@
 using namespace std;
 
 #define DEBUG_MODE 1
-#define THRESHOLD 7
+#define THRESHOLD 8
 vector<string> splitstr(const string& str, const string& delim);
 
 float dist(float x1, float y1, float z1, float x2, float y2, float z2);
@@ -25,7 +25,10 @@ int main(int argc, const char * argv[]) {
 	clock_t tStart = clock();
 	string file_path = argv[1];
 	string file_name = file_path;
-	(file_name.erase(0, 47)).erase(4, 4);
+//	(file_name.erase(0, 16)).erase(4, 4);
+
+//(file_name.erase(0, 47)).erase(4, 4);
+	//file_name.erase(5, 4);
 	cout << "filename: " << file_name << endl;
 	ofstream protein;
 	ofstream subprotein;
@@ -37,11 +40,6 @@ int main(int argc, const char * argv[]) {
 	//parsing the PDB file
 	//string CompletePDBFileName = PDBFileName;
 	cout << file_path;
-	ifstream inF;
-	inF.open("/home/niloufar/Downloads/common_structure/PDBs/3KDE.pdb",
-			fstream::in);
-	cout << endl << inF.is_open() << endl;
-
 	Parser myParser(file_path);
 
 	if ( DEBUG_MODE == 1) {
@@ -51,10 +49,7 @@ int main(int argc, const char * argv[]) {
 	}
 
 	PDB myPDB(myParser);
-	if ( DEBUG_MODE == 1) {
-		myPDB.printResult();
-		myPDB.getRealNumber(1);
-	}
+	
 	/*
 	 cout << "Please select the residues you want from the PDB (comma separated)"
 	 << endl;
@@ -88,9 +83,11 @@ int main(int argc, const char * argv[]) {
 	float x2, y2, z2;
 	float d;
 	protein << myPDB.getNumberOfAminos() << "\n";
+	cout << "number of aminos: " << myPDB.getNumberOfAminos();
 	for (int i = 0; i < myPDB.getNumberOfAminos(); i++) {
 		string amino = myPDB.getAllAminos(i);
-		protein << i << " " << amino << " " << myPDB.aminosNumber.at(i) << "\n";
+		protein << i << " " << amino << " " << myPDB.aminosNumber.at(i) 
+			<< myPDB.aminosChain.at(i)<< "\n";
 		mygraph.addNode(amino);
 	}
 	for (int i = 0; i < myPDB.getNumberOfAminos(); i++) {
@@ -103,28 +100,28 @@ int main(int argc, const char * argv[]) {
 				d = dist(x1, y1, z1, x2, y2, z2);
 				if (d < THRESHOLD) {
 					//if (myPDB.getAllAminos(i) > myPDB.getAllAminos(j)) {
-						mygraph.addEdge(myPDB.getAllAminos(i),
-								myPDB.getAllAminos(j));
-						/*else {
-						 cout << myPDB.getAllAminos(j) << " > "
-						 << myPDB.getAllAminos(i) << " ";
-						 mygraph.addEdge(myPDB.getAllAminos(j),
-						 myPDB.getAllAminos(i));
-						 }*/
-						end.push_back(j);
-						dists.push_back(d);
-						
-					}
-					if ( DEBUG_MODE == 1) {
+					mygraph.addEdge(myPDB.getAllAminos(i),
+							myPDB.getAllAminos(j));
+					/*else {
+					 cout << myPDB.getAllAminos(j) << " > "
+					 << myPDB.getAllAminos(i) << " ";
+					 mygraph.addEdge(myPDB.getAllAminos(j),
+					 myPDB.getAllAminos(i));
+					 }*/
+					end.push_back(j);
+					dists.push_back(d);
 
-						//cout << i << "and" << j << "Distance: " << d << endl;
+				}
+				if ( DEBUG_MODE == 1) {
+
+					//cout << i << "and" << j << "Distance: " << d << endl;
 					//}
 				}
 			}
 		}
 		protein << end.size() << "\n";
 		for (int j = 0; j < end.size(); j++) {
-			protein << i << " " << end.at(j) <<" " << dists.at(j) << "\n";
+			protein << i << " " << end.at(j) << " " << dists.at(j) << "\n";
 		}
 
 	}

@@ -11,7 +11,7 @@
 #include <cstdlib>
 #include <string.h>
 
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 
 void Parser::get(char* temp1, int temp2, ifstream* file) {
 
